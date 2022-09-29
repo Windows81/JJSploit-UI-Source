@@ -1,5 +1,6 @@
 //Electron IPC
-const { app, } = require('electron')
+const { app } = require('electron')
+const fs = require("fs")
 
 const SaveData = require('../settings')
 const analytics = require('../wrappers/analytics')
@@ -30,11 +31,6 @@ module.exports = function(event, message) {
 			analytics.trackEvent("Injector", "Inject Main Module")
 			break
 		}
-		case "attach-beta":{
-			AttachExploit("beta-exploit-main.dll")
-			analytics.trackEvent("Injector", "Inject Beta Module")
-			break
-		}
 		case "unlockedApp":
 			SaveData({lastKeyCompletion: new Date()})
 			break;
@@ -46,16 +42,16 @@ module.exports = function(event, message) {
 			});
 			break;
 		}
-		case "clicommand":
-			//ExploitAPI.SendCommand(message.data)
-			ExploitAPI.SMTNP("WeAreDevsPublicAPI_CMD", message.data)
-			break;
 		case "storedluascript":
 			StoredLuaScript(message);
 			break;
 		case "luascript":
 			//ExploitAPI.SendLuaScript(message.script)
 			ExploitAPI.SMTNP("WeAreDevsPublicAPI_Lua", message.script || message.data)
+			break;
+		case "luacscript":
+			//ExploitAPI.SendLuaScript(message.script)
+			ExploitAPI.SMTNP("WeAreDevsPublicAPI_LuaC", message.script || message.data)
 			break;
 		case "agreementagree":
 			vars.mainWindow.webContents.send('message', {changePage: "Attach"});

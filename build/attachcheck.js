@@ -18,7 +18,7 @@ module.exports = {
         //Grabs the latest mainWindow every time this func is called
         var mainWindow = vars.mainWindow
 
-        if(ExploitAPI.NamedPipeExist("\\\\.\\pipe\\WeAreDevsPublicAPI_CMD", "--ping")){
+        if(ExploitAPI.NamedPipeExist("\\\\.\\pipe\\WeAreDevsPublicAPI_Lua", "--ping")){
             //Ping sent, so the exploit is injected!
             if(module.exports.attached === false){
                 //The DLL mustve been injected just now

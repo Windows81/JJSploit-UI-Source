@@ -1,12 +1,13 @@
 game:GetService('RunService').Stepped:connect(function()
-   game.Players.LocalPlayer.Character.Head.CanCollide = false
-   game.Players.LocalPlayer.Character.Torso.CanCollide = false
-   game.Players.LocalPlayer.Character["Left Leg"].CanCollide = false
-   game.Players.LocalPlayer.Character["Right Leg"].CanCollide = false
+   for i,v in pairs (game:GetService("Players").LocalPlayer.Character:GetChildren()) do
+        if v:IsA("BasePart") then 
+            v.CanCollide = false
+        end
+   end
 end)
 b = Instance.new("RocketPropulsion")
-b.Parent = game.Players.LocalPlayer.Character.HumanoidRootPart
-b.Target = game.Players[_G.MagnetizeToTarget].Character.HumanoidRootPart
+b.Parent = game:GetService("Players").LocalPlayer.Character.HumanoidRootPart
+b.Target = game:GetService("Players"):FindFirstChild(_G.MagnetizeToTarget).Character.HumanoidRootPart
 b.TurnP = 20000
 b.MaxThrust = 20000
 b.MaxSpeed = 1000

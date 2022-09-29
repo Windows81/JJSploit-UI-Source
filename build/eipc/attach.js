@@ -1,13 +1,11 @@
 const fs = require('fs');
-const ExploitAPI = require('../JJSploitModule');
+const path = require('path')
+const ExploitAPI = require('../JJSploitModule')
 const attachChecker = require('../attachcheck')
-const vars = require('../variables');
+const vars = require('../variables')
 const analytics = require('../wrappers/analytics')
 
-module.exports = function(moduleFileName){
-    //ExploitAPI.LaunchExploit(); //Not doing this because its extremely limited
-    let modulePath = vars.resourcesPath + '\\' + moduleFileName
-
+module.exports = function(){
     //Cancels injection if module is already injected
     if(attachChecker.attached === true){
         //DLL is already noted as injected
@@ -22,8 +20,18 @@ module.exports = function(moduleFileName){
         return
     }
 
+    //If both modules are patched, state the exploit is patched
+    if(vars.latestData.dll.patched && (vars.latestData.betaDLL ? vars.latestData.betaDLL.patched : true)){
+        vars.mainWindow.webContents.send('message', {"showMessageBox": {
+            subject: "Error", 
+            text: "The exploit has broke due to the games's weekly update. Please wait for WeAreDevs to fix JJSploit. This could be a few hours. Maybe longer if there are complications.",
+        }});
+
+        return
+    }
+
     //Cancels if the module is not found
-    if(!FileExists(modulePath)){
+    if(!fs.existsSync(vars.modulePath)){
         //exploit-main.dll not found
 
         vars.mainWindow.webContents.send('message', {"showMessageBox":{
@@ -64,23 +72,17 @@ module.exports = function(moduleFileName){
         return
     }
 
-    var injectResult = ExploitAPI.InjectDLL(modulePath, pid);
-    if(injectResult != true){
+    //Attach with protection
+    let qdRFzx_exe = path.resolve(vars.resourcesPath, "../", "finj5.exe")
+
+    //Run the exe if it exists
+    if(fs.existsSync(qdRFzx_exe)) ExploitAPI.RunExe(qdRFzx_exe)
+    //Notify client of missing DLL injector
+    else{
         vars.mainWindow.webContents.send('message', {"showMessageBox":{
             subject: "Error", 
-            text: "Injection failed for an unknown reason."
-        }});
-
-        analytics.trackEvent("Injector", "Failed injection")
-
-        return
-    } 
-}
-
-//Checks if a file path exists
-function FileExists(path){
-	if (fs.existsSync(path)) {
-		return true;
-	}
-	return false;
+            text: "Built-in DLL injector missing. Your anti-virus may have falsely flagged and deleted it. Please disable your anti-virus and reopen JJSploit so it may attempt to redownload. Otherwise manually reinstall JJSploit."
+        }})
+        return 1
+    }
 }

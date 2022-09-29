@@ -11,7 +11,8 @@ var confPath = process.env.APPDATA + "\\jjv5conf.json"
 var defaultConf = {
 	ui:{
 		topMost: false,
-		version: 20
+		//Garbage version tracking, but now we're stuck with it
+		version: 45,
 	}
 }
 
